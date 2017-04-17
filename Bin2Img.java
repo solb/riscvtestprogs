@@ -1,10 +1,12 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.FileWriter;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 
 public class Bin2Img
 {
@@ -22,7 +24,7 @@ public class Bin2Img
 		BufferedReader bin = null;
 		try
 		{
-			bin = new BufferedReader(new FileReader(binFile));
+			bin = new BufferedReader(new InputStreamReader(new FileInputStream(binFile), StandardCharsets.ISO_8859_1));
 		}
 		catch(Exception ex)
 		{
