@@ -6,6 +6,7 @@ JAVAC      := javac
 JAVACFLAGS :=
 JAVAFLAGS  := -cp .
 OBJCOPY    := $(CROSS)objcopy
+OBJDUMP    := $(CROSS)objdump
 
 .SECONDARY: Bin2Img.class
 
@@ -23,3 +24,6 @@ OBJCOPY    := $(CROSS)objcopy
 
 %.o: %.s
 	$(AS) $(ASFLAGS) -o "$@" "$<"
+
+%.txt: %.o
+	$(OBJDUMP) -d "$<" >"$@"
