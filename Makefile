@@ -16,6 +16,17 @@ OBJDUMP    := $(CROSS)objdump
 
 .SECONDARY: Bin2Img.class java.check
 
+.PHONY: help
+help:
+	@echo "USAGE: make <filename>"
+	@echo
+	@echo "Produces the requested output file, which should be named after the input file."
+	@echo "The most useful targets are:"
+	@echo "	program.img : Generates a Logisim memory image"
+	@echo "	program.txt : Disassembles a program to show instructions alongside addresses"
+	@echo "For example, if you have an assembly source file named myprog.S or myprog.s, do:"
+	@echo "	$ make program.img	and load the resulting memory image into your Logisim CPU"
+
 java.check:
 	@which javac >/dev/null || (\
 		echo ;\
