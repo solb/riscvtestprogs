@@ -20,7 +20,7 @@ LOGISIMFLAGS := -tty tty
 OBJCOPY      := $(CROSS)objcopy
 OBJDUMP      := $(CROSS)objdump
 
-.SECONDARY: Bin2Img.class java.check
+.SECONDARY: Bin2Img.class toolchain.check java.check
 
 .PHONY: help
 help:
@@ -57,6 +57,22 @@ cpu.path:
 	@read path; \
 		echo "$$path" >cpu.path
 
+toolchain.check:
+	@which $(AS) >/dev/null || (\
+		echo ;\
+		echo ERROR: No cross-assembly toolchain found! ;\
+		echo Please install one by running: ;\
+		echo -n "	" ;\
+		if [ "$(OS)" = "Windows_NT" ] ;\
+		then \
+			echo $$ curl cs.shadysideacademy.org/comporg/riscv32-msys.tar \| tar xP ;\
+		else \
+			echo % curl cs.shadysideacademy.org/comporg/riscv32-osx.tar \| sudo tar xP ;\
+		fi ;\
+		echo ;\
+		false )
+	touch toolchain.check
+
 java.check:
 	@which javac >/dev/null || (\
 		echo ;\
@@ -76,7 +92,7 @@ $(HOME)/local/bin/logisim: $(HOME)/local/bin/logisim.jar
 	echo 'java -jar $< "$$@"' >>"$@"
 	chmod +x "$@"
 
-%.bin: %.lo
+%.bin: %.lo toolchain.check
 	$(OBJCOPY) -O binary "$<" "$@"
 
 %.class: %.java java.check
@@ -85,14 +101,14 @@ $(HOME)/local/bin/logisim: $(HOME)/local/bin/logisim.jar
 %.img: %.bin Bin2Img.class
 	$(JAVA) $(JAVAFLAGS) "$(basename $(word 2,$^))" "$<" "$@"
 
-%.lo: %.o
+%.lo: %.o toolchain.check
 	$(LD) $(LDFLAGS) -o "$@" "$<"
 
-%.o: %.S
+%.o: %.S toolchain.check
 	$(CPP) $(CPPFLAGS) "$<" | $(AS) $(ASFLAGS) -o "$@"
 
-%.o: %.s
+%.o: %.s toolchain.check
 	$(AS) $(ASFLAGS) -o "$@" "$<"
 
-%.txt: %.o
+%.txt: %.o toolchain.check
 	$(OBJDUMP) -d "$<" >"$@"

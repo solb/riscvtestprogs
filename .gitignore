@@ -6,3 +6,4 @@
 *.txt
 cpu.path
 java.check
+toolchain.check
