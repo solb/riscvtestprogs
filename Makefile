@@ -6,7 +6,7 @@ JAVAC      := javac
 JAVACFLAGS :=
 JAVAFLAGS  := -cp .
 LD         := $(CROSS)ld
-LDFLAGS    :=
+LDFLAGS    := -e 0x0
 OBJCOPY    := $(CROSS)objcopy
 OBJDUMP    := $(CROSS)objdump
 
