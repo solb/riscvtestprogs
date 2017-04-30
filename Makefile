@@ -26,6 +26,14 @@ help:
 	@echo "	program.txt : Disassembles a program to show instructions alongside addresses"
 	@echo "For example, if you have an assembly source file named myprog.S or myprog.s, do:"
 	@echo "	$ make program.img	and load the resulting memory image into your Logisim CPU"
+	@echo
+	@echo "There are also a few special targets that don't produce files:"
+	@echo "	clean : Remove generated files"
+	@echo "	help  : You're looking at it!"
+
+.PHONY: clean
+clean:
+	git clean -fX
 
 java.check:
 	@which javac >/dev/null || (\
