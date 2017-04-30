@@ -31,7 +31,13 @@ help:
 	@echo "	program.img : Generates a Logisim memory image"
 	@echo "	program.txt : Disassembles a program to show instructions alongside addresses"
 	@echo "For example, if you have an assembly source file named myprog.S or myprog.s, do:"
-	@echo "	$ make program.img	and load the resulting memory image into your Logisim CPU"
+	@echo -n "	"
+ifeq ($(OS),Windows_NT)
+	@echo -n "$$"
+else
+	@echo -n "%"
+endif
+	@echo " make program.img	and load the resulting memory image into your Logisim CPU"
 	@echo
 	@echo "There are also a few special targets that don't produce files:"
 	@echo "	run   : Generate the command necessary to run an image file in your CPU"
