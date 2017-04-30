@@ -53,6 +53,7 @@ clean:
 	git clean -fX
 
 cpu.path:
+	@echo >&2
 	@echo -n "Enter the path to your CPU CIRC file: " >&2
 	@read path; \
 		echo "$$path" >cpu.path
