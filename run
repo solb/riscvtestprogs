@@ -21,4 +21,10 @@ fi
 
 image="`echo "$file" | sed 's/\(\.[^.]*\)\?$/.img/'`"
 make "$image"
+status="$?"
+if [ "$status" -ne "0" ]
+then
+	exit "$status"
+fi
+
 `make run` "$image"
