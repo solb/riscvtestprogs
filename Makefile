@@ -4,15 +4,17 @@ endif
 
 CROSS := riscv32-
 
-AS         := $(CROSS)as
-JAVA       := java
-JAVAC      := javac
-JAVACFLAGS :=
-JAVAFLAGS  := -cp .
-LD         := $(CROSS)ld
-LDFLAGS    := -e 0x0
-OBJCOPY    := $(CROSS)objcopy
-OBJDUMP    := $(CROSS)objdump
+AS           := $(CROSS)as
+JAVA         := java
+JAVAC        := javac
+JAVACFLAGS   :=
+JAVAFLAGS    := -cp .
+LD           := $(CROSS)ld
+LDFLAGS      := -e 0x0
+LOGISIM      := $(shell which logisim)
+LOGISIMFLAGS := -tty tty
+OBJCOPY      := $(CROSS)objcopy
+OBJDUMP      := $(CROSS)objdump
 
 .SECONDARY: Bin2Img.class java.check
 
@@ -28,12 +30,22 @@ help:
 	@echo "	$ make program.img	and load the resulting memory image into your Logisim CPU"
 	@echo
 	@echo "There are also a few special targets that don't produce files:"
+	@echo "	run   : Generate the command necessary to run an image file in your CPU"
 	@echo "	clean : Remove generated files"
 	@echo "	help  : You're looking at it!"
+
+.PHONY: run
+run: cpu.path
+	@echo "$(LOGISIM) $(LOGISIMFLAGS) $(shell cat $<) -load"
 
 .PHONY: clean
 clean:
 	git clean -fX
+
+cpu.path:
+	@echo -n "Enter the path to your CPU CIRC file: " >&2
+	@read path; \
+		echo "$$path" >cpu.path
 
 java.check:
 	@which javac >/dev/null || (\
