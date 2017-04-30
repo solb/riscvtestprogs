@@ -5,12 +5,14 @@ JAVA       := java
 JAVAC      := javac
 JAVACFLAGS :=
 JAVAFLAGS  := -cp .
+LD         := $(CROSS)ld
+LDFLAGS    :=
 OBJCOPY    := $(CROSS)objcopy
 OBJDUMP    := $(CROSS)objdump
 
 .SECONDARY: Bin2Img.class
 
-%.bin: %.o
+%.bin: %.lo
 	$(OBJCOPY) -O binary "$<" "$@"
 
 %.class: %.java
@@ -18,6 +20,9 @@ OBJDUMP    := $(CROSS)objdump
 
 %.img: %.bin Bin2Img.class
 	$(JAVA) $(JAVAFLAGS) "$(basename $(word 2,$^))" "$<" "$@"
+
+%.lo: %.o
+	$(LD) $(LDFLAGS) -o "$@" "$<"
 
 %.o: %.S
 	$(CPP) $(CPPFLAGS) "$<" | $(AS) $(ASFLAGS) -o "$@"
