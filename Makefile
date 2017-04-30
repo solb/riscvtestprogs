@@ -84,8 +84,8 @@ java.check:
 	touch java.check
 
 /usr/local/bin/logisim.exe $(HOME)/local/bin/logisim.jar:
-	mkdir -p "$(dir $@)"
-	curl -L sf.net/projects/circuit/files/latest >"$@"
+	@mkdir -p "$(dir $@)"
+	@curl -L sf.net/projects/circuit/files/latest >"$@"
 
 $(HOME)/local/bin/logisim: $(HOME)/local/bin/logisim.jar
 	echo "#!/bin/sh" >"$@"
