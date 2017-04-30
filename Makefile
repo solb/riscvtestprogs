@@ -1,5 +1,9 @@
 ifeq ($(OS),Windows_NT)
+	LOGISIM_BINARY := /usr/local/bin/logisim.exe
 	PATH := $(wildcard /c/Program\ Files/Java/jdk*/bin):$(PATH)
+else
+	LOGISIM_BINARY := $(HOME)/local/bin/logisim
+	PATH := $(HOME)/local/bin:$(PATH)
 endif
 
 CROSS := riscv32-
@@ -35,8 +39,8 @@ help:
 	@echo "	help  : You're looking at it!"
 
 .PHONY: run
-run: cpu.path
-	@echo "$(LOGISIM) $(LOGISIMFLAGS) $(shell cat $<) -load"
+run: $(LOGISIM_BINARY) cpu.path
+	@echo "$(LOGISIM) $(LOGISIMFLAGS) $(shell cat $(word 2,$^)) -load"
 
 .PHONY: clean
 clean:
@@ -56,6 +60,15 @@ java.check:
 		echo ;\
 		false )
 	touch java.check
+
+/usr/local/bin/logisim.exe $(HOME)/local/bin/logisim.jar:
+	mkdir -p "$(dir $@)"
+	curl -L sf.net/projects/circuit/files/latest >"$@"
+
+$(HOME)/local/bin/logisim: $(HOME)/local/bin/logisim.jar
+	echo "#!/bin/sh" >"$@"
+	echo 'java -jar $< "$$@"' >>"$@"
+	chmod +x "$@"
 
 %.bin: %.lo
 	$(OBJCOPY) -O binary "$<" "$@"
