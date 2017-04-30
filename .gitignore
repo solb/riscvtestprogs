@@ -1,5 +1,6 @@
 *.bin
 *.class
 *.img
+*.lo
 *.o
 *.txt
