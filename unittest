@@ -1,0 +1,89 @@
+#!/bin/sh
+
+readonly TESTDIR="riscv-tests/isa/rv32ui"
+readonly TESTNAMES="`ls "$TESTDIR" | sed -n 's/\(.*\)\.S$/\1/p'`"
+readonly EXPECTED=" 01 01 0a"
+
+if [ $# -eq 0 ]
+then
+	cat <<-tac
+		USAGE: $0 <test>...
+
+		Runs official RISC-V unit tests.  Run them all with +, or pass one or more of these:
+		$TESTNAMES
+
+		The options at the prompts following each failing test are:
+			y : Yes, dissassemble the test.
+			n : No, proceed without disassembling.
+			d : no, and Don't ask again.
+			q : no, and Quit now.
+	tac
+	exit 1
+fi
+
+export CPPFLAGS="-I riscv-tests/env/v -I riscv-tests/isa/macros/scalar -D __riscv_xlen=32"
+
+case "$*" in
++)
+	set -- $TESTNAMES
+esac
+
+echo "Launching $# tests: $*" >&2
+passed="0"
+
+for testname in "$@"
+do
+	if [ ! -e "$TESTDIR/$testname.S" ]
+	then
+		echo "FATAL: No such test '$testname'" >&2
+		exit 2
+	fi
+done
+
+showme=""
+for testname in "$@"
+do
+	echo
+	echo
+	echo "RUNNING TEST: $testname"
+	echo  =======================
+
+	output="`./run "$TESTDIR/$testname.S" | tail -n1 | od -tx1 -An`"
+	echo "OUTPUT:$output"
+
+	if [ "$output" = "$EXPECTED" ]
+	then
+		echo "Test passed."
+		passed="$((passed + 1))"
+	else
+		echo "Test '$testname' FAILED!" >&2
+		subtest="$((0x$(echo "$output" | cut -d" " -f2) >> 1))"
+		echo "FIRST FAILING SUBTEST: $subtest" >&2
+
+		echo -n "Would you like to see the test source (y/N/d/q)? "
+		case "$showme" in
+		d|D)
+			;;
+		*)
+			read showme
+			;;
+		esac
+
+		case "$showme" in
+		y|Y)
+			make "$TESTDIR/$testname.txt" >/dev/null
+			less "$TESTDIR/$testname.txt"
+			;;
+		q|Q)
+			exit 3
+			;;
+		esac
+	fi
+done
+
+echo "Passed $passed tests out of $#." >&2
+if [ "$passed" -ne "$#" ]
+then
+	echo "THERE WERE FAILING TESTS." >&2
+	exit 4
+fi
