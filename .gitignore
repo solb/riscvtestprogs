@@ -6,5 +6,6 @@
 *.txt
 cpu.path
 java.check
+preprocessor.check
 tar.check
 toolchain.check

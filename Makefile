@@ -20,7 +20,7 @@ LOGISIMFLAGS := -tty tty
 OBJCOPY      := $(CROSS)objcopy
 OBJDUMP      := $(CROSS)objdump
 
-.SECONDARY: Bin2Img.class tar.check toolchain.check java.check
+.SECONDARY: Bin2Img.class tar.check preprocessor.check toolchain.check java.check
 
 .PHONY: help
 help:
@@ -62,6 +62,16 @@ tar.check:
 	@which tar >/dev/null || \
 		pacman -S --noconfirm tar
 	touch tar.check
+
+preprocessor.check:
+	@which $(CPP) >/dev/null || \
+		if [ "$(OS)" = "Windows_NT" ] ;\
+		then \
+			pacman -S --noconfirm gcc ;\
+		else \
+			xcode-select --install ;\
+		fi
+	touch preprocessor.check
 
 toolchain.check: tar.check
 	@which $(AS) >/dev/null || (\
@@ -110,7 +120,7 @@ $(HOME)/local/bin/logisim: $(HOME)/local/bin/logisim.jar
 %.lo: %.o toolchain.check
 	$(LD) $(LDFLAGS) -o "$@" "$<"
 
-%.o: %.S toolchain.check
+%.o: %.S preprocessor.check toolchain.check
 	$(CPP) $(CPPFLAGS) "$<" | $(AS) $(ASFLAGS) -o "$@"
 
 %.o: %.s toolchain.check
