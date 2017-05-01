@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if [ ! -e riscv-tests/env/v ]
+then
+	git submodule update --init --recursive
+fi
+
 readonly TESTDIR="riscv-tests/isa/rv32ui"
 readonly TESTNAMES="`ls "$TESTDIR" | sed -n 's/\(.*\)\.S$/\1/p'`"
 readonly EXPECTED=" 01 01 0a"
