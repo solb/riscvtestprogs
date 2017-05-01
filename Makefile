@@ -64,7 +64,7 @@ tar.check:
 	touch tar.check
 
 preprocessor.check:
-	@which $(CPP) >/dev/null || \
+	@which $(word 1,$(CPP)) >/dev/null || \
 		if [ "$(OS)" = "Windows_NT" ] ;\
 		then \
 			pacman -S --noconfirm gcc ;\
