@@ -62,7 +62,7 @@ do
 		passed="$((passed + 1))"
 	else
 		echo "Test '$testname' FAILED!" >&2
-		subtest="$((0x$(echo "$output" | cut -d" " -f2) >> 1))"
+		subtest="$((0x$(echo "$output" | head -n1 | cut -d" " -f2) >> 1))"
 		echo "FIRST FAILING SUBTEST: $subtest" >&2
 
 		echo -n "Would you like to see the test source (y/N/d/q)? "
