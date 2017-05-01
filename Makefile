@@ -20,7 +20,7 @@ LOGISIMFLAGS := -tty tty
 OBJCOPY      := $(CROSS)objcopy
 OBJDUMP      := $(CROSS)objdump
 
-.SECONDARY: Bin2Img.class toolchain.check java.check
+.SECONDARY: Bin2Img.class tar.check toolchain.check java.check
 
 .PHONY: help
 help:
@@ -58,7 +58,12 @@ cpu.path:
 	@read path; \
 		echo "$$path" >cpu.path
 
-toolchain.check:
+tar.check:
+	@which tar >/dev/null || \
+		pacman -S --noconfirm tar
+	touch tar.check
+
+toolchain.check: tar.check
 	@which $(AS) >/dev/null || (\
 		echo ;\
 		echo ERROR: No cross-assembly toolchain found! ;\
