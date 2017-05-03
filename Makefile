@@ -20,7 +20,7 @@ LOGISIMFLAGS := -tty tty
 OBJCOPY      := $(CROSS)objcopy
 OBJDUMP      := $(CROSS)objdump
 
-.SECONDARY: Bin2Img.class tar.check preprocessor.check toolchain.check java.check
+.SECONDARY: Bin2Img.class tar.check preprocessor.check toolchain.check java.check $(subst .S,.o,$(wildcard riscv-tests/isa/rv32ui/*.S))
 
 .PHONY: help
 help:
