@@ -40,9 +40,10 @@ endif
 	@echo " make program.img	and load the resulting memory image into your Logisim CPU"
 	@echo
 	@echo "There are also a few special targets that don't produce files:"
-	@echo "	run   : Generate the command necessary to run an image file in your CPU"
-	@echo "	clean : Remove generated files"
-	@echo "	help  : You're looking at it!"
+	@echo "	run       : Generate the command necessary to run an image file in your CPU"
+	@echo "	clean     : Remove generated files"
+	@echo "	distclean : Same and also make riscv-tests/ pristine"
+	@echo "	help      : You're looking at it!"
 
 .PHONY: run
 run: $(LOGISIM_BINARY) cpu.path
@@ -51,6 +52,10 @@ run: $(LOGISIM_BINARY) cpu.path
 .PHONY: clean
 clean:
 	git clean -fX
+
+.PHONY: distclean
+distclean: clean
+	git submodule foreach --recursive git clean -fx
 
 cpu.path:
 	@echo >&2
