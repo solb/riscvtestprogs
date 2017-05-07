@@ -113,7 +113,7 @@ $(HOME)/local/bin/logisim: $(HOME)/local/bin/logisim.jar
 	echo 'java -jar $< "$$@"' >>"$@"
 	chmod +x "$@"
 
-%.bin: %.lo toolchain.check
+%.bin: %.lo
 	$(OBJCOPY) -O binary "$<" "$@"
 
 %.class: %.java java.check
@@ -122,7 +122,7 @@ $(HOME)/local/bin/logisim: $(HOME)/local/bin/logisim.jar
 %.img: %.bin Bin2Img.class
 	$(JAVA) $(JAVAFLAGS) "$(basename $(word 2,$^))" "$<" "$@"
 
-%.lo: %.o toolchain.check
+%.lo: %.o
 	$(LD) $(LDFLAGS) -o "$@" "$<"
 
 %.o: %.S preprocessor.check toolchain.check
@@ -131,5 +131,5 @@ $(HOME)/local/bin/logisim: $(HOME)/local/bin/logisim.jar
 %.o: %.s toolchain.check
 	$(AS) $(ASFLAGS) -o "$@" "$<"
 
-%.txt: %.lo toolchain.check
+%.txt: %.lo
 	$(OBJDUMP) -d "$<" >"$@"
