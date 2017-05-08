@@ -88,7 +88,7 @@ toolchain.check: tar.check
 		then \
 			echo $$ curl cs.shadysideacademy.org/comporg/riscv32-msys.tar \| tar xP ;\
 		else \
-			echo % curl cs.shadysideacademy.org/comporg/riscv32-osx.tar \| sudo tar xP ;\
+			echo % curl cs.shadysideacademy.org/comporg/riscv32-osx.tar \| sudo tar xP \&\& chmod +x /usr/local/bin/riscv32-\* ;\
 		fi ;\
 		echo ;\
 		false )
