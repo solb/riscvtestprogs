@@ -24,7 +24,7 @@ LOGISIMFLAGS := -tty tty
 OBJCOPY      := $(CROSS)objcopy
 OBJDUMP      := $(CROSS)objdump
 
-.SECONDARY: Bin2Img.class tar.check preprocessor.check assembler.check compiler.check java.check $(subst .S,.o,$(wildcard riscv-tests/isa/rv32ui/*.S))
+.SECONDARY: crt0.o Bin2Img.class tar.check preprocessor.check assembler.check compiler.check java.check $(subst .S,.o,$(wildcard riscv-tests/isa/rv32ui/*.S))
 
 .PHONY: help
 help:
@@ -142,8 +142,8 @@ $(HOME)/local/bin/logisim: $(HOME)/local/bin/logisim.jar
 %.img: %.bin Bin2Img.class
 	$(JAVA) $(JAVAFLAGS) "$(basename $(word 2,$^))" "$<" "$@"
 
-%.lo: %.o
-	$(LD) $(LDFLAGS) -o "$@" "$<"
+%.lo: %.o crt0.o
+	$(LD) $(LDFLAGS) -o "$@" crt0.o "$<" $(LDLIBS)
 
 %.o: %.c compiler.check
 	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o "$@" "$<"
