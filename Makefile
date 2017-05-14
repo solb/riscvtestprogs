@@ -9,6 +9,9 @@ endif
 CROSS := riscv32-
 
 AS           := $(CROSS)as
+CC           := $(CROSS)gcc
+CFLAGS       := -Og -std=c99 -Wall -Wextra -Wpedantic
+CPPFLAGS     :=
 JAVA         := java
 JAVAC        := javac
 JAVACFLAGS   :=
@@ -20,7 +23,7 @@ LOGISIMFLAGS := -tty tty
 OBJCOPY      := $(CROSS)objcopy
 OBJDUMP      := $(CROSS)objdump
 
-.SECONDARY: Bin2Img.class tar.check preprocessor.check assembler.check java.check $(subst .S,.o,$(wildcard riscv-tests/isa/rv32ui/*.S))
+.SECONDARY: Bin2Img.class tar.check preprocessor.check assembler.check compiler.check java.check $(subst .S,.o,$(wildcard riscv-tests/isa/rv32ui/*.S))
 
 .PHONY: help
 help:
@@ -94,6 +97,22 @@ assembler.check: tar.check
 		false )
 	touch "$@"
 
+compiler.check: assembler.check
+	@which $(CC) >/dev/null || (\
+		echo ;\
+		echo ERROR: No cross-compilation toolchain found! ;\
+		echo Please install one by running: ;\
+		echo -n "	" ;\
+		if [ "$(OS)" = "Windows_NT" ] ;\
+		then \
+			echo $$ curl cs.shadysideacademy.org/comporg/riscv32-msys-c.tar \| tar xP ;\
+		else \
+			echo % curl cs.shadysideacademy.org/comporg/riscv32-osx-c.tar \| sudo tar xP \&\& chmod +x /usr/local/bin/riscv32-\* ;\
+		fi ;\
+		echo ;\
+		false )
+	touch "$@"
+
 java.check:
 	@which javac >/dev/null || (\
 		echo ;\
@@ -125,11 +144,17 @@ $(HOME)/local/bin/logisim: $(HOME)/local/bin/logisim.jar
 %.lo: %.o
 	$(LD) $(LDFLAGS) -o "$@" "$<"
 
+%.o: %.c compiler.check
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c -o "$@" "$<"
+
 %.o: %.S preprocessor.check assembler.check
 	$(CPP) $(CPPFLAGS) "$<" | $(AS) $(ASFLAGS) -o "$@"
 
 %.o: %.s assembler.check
 	$(AS) $(ASFLAGS) -o "$@" "$<"
+
+%.s: %.c compiler.check
+	$(CC) $(CPPFLAGS) $(CFLAGS) -S -o "$@" "$<"
 
 %.txt: %.lo
 	$(OBJDUMP) -d "$<" >"$@"

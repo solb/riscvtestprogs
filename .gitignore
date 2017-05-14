@@ -5,6 +5,7 @@
 *.o
 *.txt
 assembler.check
+compiler.check
 cpu.path
 java.check
 preprocessor.check
