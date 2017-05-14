@@ -66,7 +66,7 @@ cpu.path:
 tar.check:
 	@which tar >/dev/null || \
 		pacman -S --noconfirm tar
-	touch tar.check
+	touch "$@"
 
 preprocessor.check:
 	@which $(word 1,$(CPP)) >/dev/null || \
@@ -76,7 +76,7 @@ preprocessor.check:
 		else \
 			xcode-select --install ;\
 		fi
-	touch preprocessor.check
+	touch "$@"
 
 toolchain.check: tar.check
 	@which $(AS) >/dev/null || (\
@@ -92,7 +92,7 @@ toolchain.check: tar.check
 		fi ;\
 		echo ;\
 		false )
-	touch toolchain.check
+	touch "$@"
 
 java.check:
 	@which javac >/dev/null || (\
@@ -102,7 +102,7 @@ java.check:
 		echo Then run the installer to completion, keeping the default installation path. ;\
 		echo ;\
 		false )
-	touch java.check
+	touch "$@"
 
 /usr/local/bin/logisim.exe $(HOME)/local/bin/logisim.jar:
 	@mkdir -p "$(dir $@)"
