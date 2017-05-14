@@ -131,5 +131,5 @@ $(HOME)/local/bin/logisim: $(HOME)/local/bin/logisim.jar
 %.o: %.s toolchain.check
 	$(AS) $(ASFLAGS) -o "$@" "$<"
 
-%.txt: %.o toolchain.check
+%.txt: %.lo toolchain.check
 	$(OBJDUMP) -d "$<" >"$@"
