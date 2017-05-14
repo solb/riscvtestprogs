@@ -12,13 +12,14 @@ AS           := $(CROSS)as
 ASFLAGS      := -march=rv32i
 CC           := $(CROSS)gcc
 CFLAGS       := -Og -std=c99 -Wall -Wextra -Wpedantic
-CPPFLAGS     :=
+CPPFLAGS     := $(if $(wildcard include),-Iinclude)
 JAVA         := java
 JAVAC        := javac
 JAVACFLAGS   :=
 JAVAFLAGS    := -cp .
 LD           := $(CROSS)ld
-LDFLAGS      := -Ttext=0x0 -e 0x0
+LDFLAGS      := -Ttext=0x0 -e 0x0 $(if $(wildcard lib),-Llib)
+LDLIBS       := $(if $(wildcard lib/libc.a),-lc)
 LOGISIM       = $(shell which logisim 2>/dev/null)
 LOGISIMFLAGS := -tty tty
 OBJCOPY      := $(CROSS)objcopy
@@ -34,6 +35,7 @@ help:
 	@echo "The most useful targets are:"
 	@echo "	program.img : Generates a Logisim memory image"
 	@echo "	program.txt : Disassembles a program to show instructions alongside addresses"
+	@echo "	lib/libc.a  : Builds a very limited C language library for application use"
 	@echo "For example, if you have an assembly source file named myprog.S or myprog.s, do:"
 	@echo -n "	"
 ifeq ($(OS),Windows_NT)
@@ -132,6 +134,11 @@ $(HOME)/local/bin/logisim: $(HOME)/local/bin/logisim.jar
 	echo "#!/bin/sh" >"$@"
 	echo 'java -jar $< "$$@"' >>"$@"
 	chmod +x "$@"
+
+lib/libc.a: $(subst .c,.o,$(wildcard lib/*.c)) | compiler.check
+
+%.a:
+	ar rs "$@" $^
 
 %.bin: %.lo
 	$(OBJCOPY) -O binary "$<" "$@"
