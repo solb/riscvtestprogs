@@ -9,6 +9,7 @@ endif
 CROSS := riscv32-
 
 AS           := $(CROSS)as
+ASFLAGS      := -march=rv32i
 CC           := $(CROSS)gcc
 CFLAGS       := -Og -std=c99 -Wall -Wextra -Wpedantic
 CPPFLAGS     :=
