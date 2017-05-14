@@ -20,7 +20,7 @@ LOGISIMFLAGS := -tty tty
 OBJCOPY      := $(CROSS)objcopy
 OBJDUMP      := $(CROSS)objdump
 
-.SECONDARY: Bin2Img.class tar.check preprocessor.check toolchain.check java.check $(subst .S,.o,$(wildcard riscv-tests/isa/rv32ui/*.S))
+.SECONDARY: Bin2Img.class tar.check preprocessor.check assembler.check java.check $(subst .S,.o,$(wildcard riscv-tests/isa/rv32ui/*.S))
 
 .PHONY: help
 help:
@@ -78,7 +78,7 @@ preprocessor.check:
 		fi
 	touch "$@"
 
-toolchain.check: tar.check
+assembler.check: tar.check
 	@which $(AS) >/dev/null || (\
 		echo ;\
 		echo ERROR: No cross-assembly toolchain found! ;\
@@ -125,10 +125,10 @@ $(HOME)/local/bin/logisim: $(HOME)/local/bin/logisim.jar
 %.lo: %.o
 	$(LD) $(LDFLAGS) -o "$@" "$<"
 
-%.o: %.S preprocessor.check toolchain.check
+%.o: %.S preprocessor.check assembler.check
 	$(CPP) $(CPPFLAGS) "$<" | $(AS) $(ASFLAGS) -o "$@"
 
-%.o: %.s toolchain.check
+%.o: %.s assembler.check
 	$(AS) $(ASFLAGS) -o "$@" "$<"
 
 %.txt: %.lo

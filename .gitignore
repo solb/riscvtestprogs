@@ -4,8 +4,8 @@
 *.lo
 *.o
 *.txt
+assembler.check
 cpu.path
 java.check
 preprocessor.check
 tar.check
-toolchain.check
