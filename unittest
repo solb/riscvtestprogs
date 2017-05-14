@@ -7,6 +7,7 @@ fi
 
 readonly TESTDIR="riscv-tests/isa/rv32ui"
 readonly TESTNAMES="`ls "$TESTDIR" | sed -n 's/\(.*\)\.S$/\1/p'`"
+readonly CPPFLAGS="-Iriscv-tests/env/v -Iriscv-tests/isa/macros/scalar -D__riscv_xlen=32"
 readonly EXPECTED=" 01 01 0a"
 
 if [ $# -eq 0 ]
@@ -25,8 +26,6 @@ then
 	tac
 	exit 1
 fi
-
-export CPPFLAGS="-I riscv-tests/env/v -I riscv-tests/isa/macros/scalar -D __riscv_xlen=32"
 
 case "$*" in
 +)
@@ -53,7 +52,7 @@ do
 	echo "RUNNING TEST: $testname"
 	echo  =======================
 
-	output="`./run "$TESTDIR/$testname.S" | tail -n1 | od -tx1 -An`"
+	output="`./run "$TESTDIR/$testname.S" CPPFLAGS="$CPPFLAGS" | tail -n1 | od -tx1 -An`"
 	echo "OUTPUT:$output"
 
 	if [ "$output" = "$EXPECTED" ]
