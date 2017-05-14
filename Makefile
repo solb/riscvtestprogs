@@ -14,7 +14,7 @@ JAVAC        := javac
 JAVACFLAGS   :=
 JAVAFLAGS    := -cp .
 LD           := $(CROSS)ld
-LDFLAGS      := -e 0x0
+LDFLAGS      := -Ttext=0x0 -e 0x0
 LOGISIM       = $(shell which logisim 2>/dev/null)
 LOGISIMFLAGS := -tty tty
 OBJCOPY      := $(CROSS)objcopy
