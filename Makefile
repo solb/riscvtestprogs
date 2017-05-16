@@ -135,7 +135,7 @@ $(HOME)/local/bin/logisim: $(HOME)/local/bin/logisim.jar
 	echo 'java -jar $< "$$@"' >>"$@"
 	chmod +x "$@"
 
-lib/libc.a: $(subst .c,.o,$(wildcard lib/*.c)) | compiler.check
+lib/libc.a: $(subst .c,.o,$(wildcard lib/*.c)) $(subst .s,.o,$(wildcard lib/*.s)) | compiler.check
 
 %.a:
 	ar rs "$@" $^
