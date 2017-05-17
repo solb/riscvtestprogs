@@ -18,8 +18,8 @@ JAVAC        := javac
 JAVACFLAGS   :=
 JAVAFLAGS    := -cp .
 LD           := $(CROSS)ld
-LDFLAGS      := -Ttext=0x0 -e 0x0 $(if $(wildcard lib),-Llib)
-LDLIBS       := $(if $(wildcard lib/libc.a),-lc)
+LDFLAGS      := -Ttext=0x0 -e 0x0 $(if $(wildcard lib),-Llib) -L/usr/local/lib/gcc/riscv32-elf/7.1.0
+LDLIBS       := $(if $(wildcard lib/libc.a),-lc) -lgcc
 LOGISIM       = $(shell which logisim 2>/dev/null)
 LOGISIMFLAGS := -tty tty
 OBJCOPY      := $(CROSS)objcopy
