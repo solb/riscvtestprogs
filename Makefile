@@ -12,6 +12,7 @@ AS           := $(CROSS)as
 ASFLAGS      := -march=rv32i
 CC           := $(CROSS)gcc
 CFLAGS       := -Og -std=c99 -Wall -Wextra -Wpedantic
+CPP          := cpp
 CPPFLAGS     := $(if $(wildcard include),-Iinclude)
 JAVA         := java
 JAVAC        := javac
