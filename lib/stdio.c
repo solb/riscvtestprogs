@@ -21,6 +21,32 @@ static void hexdump(unsigned num, char symb) {
 		putchar('0');
 }
 
+static void decdump(unsigned num) {
+	bool started = false;
+
+	for(int div = 1000000000; div != 1; div /= 10) {
+		unsigned digit = num / div;
+		if(started || digit) {
+			putchar('0' + num / div);
+
+			started = true;
+		}
+
+		num %= div;
+	}
+
+	putchar('0' + num);
+}
+
+static void sdecdump(int num) {
+	if(num < 0) {
+		putchar('-');
+		num *= -1;
+	}
+
+	decdump((unsigned) num);
+}
+
 int printf(const char *restrict format, ...) {
 	va_list args;
 	va_start(args, format);
@@ -29,6 +55,15 @@ int printf(const char *restrict format, ...) {
 		if(chr == '%') {
 			int num = va_arg(args, int);
 			switch(format[++index]) {
+			case 'd':
+			case 'i':
+				sdecdump(num);
+				break;
+
+			case 'u':
+				decdump(num);
+				break;
+
 			case 'x':
 				hexdump((unsigned) num, 'a');
 				break;
