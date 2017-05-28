@@ -20,7 +20,7 @@ then
 fi
 shift
 
-image="`echo "$file" | sed 's/\(\.[^.]*\)\?$/.img/'`"
+image="`echo "$file" | sed -e 's/\(\.[^.]*\)$//' -e 's/$/.img/'`"
 make "$@" "$image"
 status="$?"
 if [ "$status" -ne "0" ]
