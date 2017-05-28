@@ -1,8 +1,10 @@
 ifeq ($(OS),Windows_NT)
-	LOGISIM_BINARY := /usr/local/bin/logisim.exe
+	LOGISIM := /usr/local/bin/logisim
+	LOGISIM_BINARY := $(LOGISIM).exe
 	PATH := $(wildcard /c/Program\ Files/Java/jdk*/bin):$(PATH)
 else
-	LOGISIM_BINARY := $(HOME)/local/bin/logisim
+	LOGISIM := $(HOME)/local/bin/logisim
+	LOGISIM_BINARY := $(LOGISIM)
 	PATH := $(HOME)/local/bin:$(PATH)
 endif
 
@@ -21,7 +23,6 @@ JAVAFLAGS    := -cp .
 LD           := $(CROSS)ld
 LDFLAGS      := -Ttext=0x0 -e 0x0 $(if $(wildcard lib),-Llib) $(if $(wildcard /usr/local/lib/gcc/riscv32-elf/7.1.0/libgcc.a),-L/usr/local/lib/gcc/riscv32-elf/7.1.0)
 LDLIBS       := $(if $(wildcard lib/libc.a),-lc) $(if $(wildcard /usr/local/lib/gcc/riscv32-elf/7.1.0/libgcc.a),-lgcc)
-LOGISIM       = $(shell which logisim 2>/dev/null)
 LOGISIMFLAGS := -tty tty
 OBJCOPY      := $(CROSS)objcopy
 OBJDUMP      := $(CROSS)objdump
