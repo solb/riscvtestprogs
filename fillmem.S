@@ -12,8 +12,6 @@
 #define limit t1
 
 	.text
-	j    main
-
 	.align 8                         # Align to 256-byte boundary.
 main:
 	xor  addr, addr, addr            # Zero addr.
